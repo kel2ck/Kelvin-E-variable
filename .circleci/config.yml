@@ -1,37 +1,50 @@
 version: 2.1
 
 jobs:
-  say-hello:
-    docker:
-      - image: cimg/base:stable 
+  kelvin-sample:
+    docker: 
+      - image: circleci/node:13.8.0
     steps:
       - checkout
       - run:
-          name: "Say hello"
-          command: "echo Hello, World!"
-  Print_hello:
+          name: Print out Kelvin's name and say hello j
+          command: |
+            echo "Hello Kelvin, Big boss!" >> name.txt
+            cat name.txt  
+        
+  smart-process:
     docker:
-      -image: cimg/base:stable
+      - image: python:3.7-alpine3.11
     steps:
+      - checkout
       - run: 
-          name: "print hello"          
-          command: "echo hello to the world"
-  print_world:
+          name: Tell Mr Kelvin that this process is working
+          command: |
+            mkdir kelvin
+            cd kelvin
+            echo https://sagencoders.com >> ayorinde.txt
+            echo https://google.com >> ayorinde.txt
+            echo https://udacity.com >> ayorinde.tx
+            tail -2 ayorinde.txt
+
+  dull-process:
     docker:
-      -image: cimg/base:stable
+      - image: python:3.7-alpine3.11
     steps:
-      - run:
-          name: "print_world"
-          command: "echo world"          
+      - checkout
+      - run: 
+          name: The doll process
+          command: |
+            echo "I am a dull process"
+      - run: 
+          name:  Another dull process
+          command: echo "I told you before, I am a dull process!"
+
 
 workflows:
-  say-hello-workflow:
+  kelvin:
     jobs:
-      - say-hello
-
-  my-job-workflow:
-    jobs:    
-      - print_hello
-      - print_world:
-          requires:
-            - print_hello
+      - kelvin-sample
+      - smart-process
+      - dull-process:
+          requires: [kelvin-sample, smart-process]
